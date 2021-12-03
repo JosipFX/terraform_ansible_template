@@ -1,0 +1,7 @@
+- hosts: all
+  gather_facts: yes
+
+  roles:
+    - { role: nginx, become: yes }
+    - { role: deploy_app, become: yes }
+

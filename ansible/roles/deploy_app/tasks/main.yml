@@ -1,0 +1,47 @@
+---
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Add nodejs repo
+    shell: 'curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
+
+  - name: Install reqired packages
+    apt: 
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - curl
+      - wget
+      - nodejs
+  
+  - name: make sure the latest npm is installed
+    command: npm install -g npm
+
+  - name: Clone a private repository
+    git:
+      repo: "{{ git_repo_url }}"
+      dest: "{{ clone_path }}"
+      version: "{{ repo_branch }}"
+      accept_hostkey: yes
+
+  - name: Install packages based on package.json using the npm
+    npm:
+      path: "{{ repo_path }}"
+      state: present
+
+  - name: Build app
+    command: npm run build
+    args:
+      chdir: "{{ repo_path }}"
+
+  - name: Copy folder to /var/www
+    copy:
+     src: "{{ repo_path }}/build"
+     dest: /var/www/html
+     remote_src: yes
+
+
+

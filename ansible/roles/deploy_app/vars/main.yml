@@ -1,0 +1,4 @@
+git_repo_url: https://github.com/JosipFX/islab_iac_demo.git
+clone_path: /opt/git_repo
+repo_path: /opt/git_repo/frontend
+repo_branch: main
